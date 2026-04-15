@@ -4,6 +4,8 @@ import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import { getDb } from './db/connection';
 import { authRoutes } from './routes/auth.routes';
+import { warehousesRoutes } from './routes/warehouses.routes';
+import { itemsRoutes } from './routes/items.routes';
 
 const server = Fastify({
   logger: {
@@ -26,7 +28,9 @@ server.register(jwt, {
 });
 
 // Маршруты
-server.register(authRoutes, { prefix: '/api/auth' });
+server.register(authRoutes,       { prefix: '/api/auth' });
+server.register(warehousesRoutes, { prefix: '/api/warehouses' });
+server.register(itemsRoutes,      { prefix: '/api/items' });
 
 // Healthcheck
 server.get('/health', async () => {
