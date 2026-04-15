@@ -1,0 +1,29 @@
+{
+  "name": "warehouse-backend",
+  "version": "1.0.0",
+  "description": "Backend для системы учёта склада кафе-джелатерии",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc",
+    "migrate": "tsx src/db/migrate.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@fastify/jwt": "^8.0.1",
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^9.4.3",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.27.0",
+    "node-cron": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^20.12.0",
+    "@types/node-cron": "^3.0.11",
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.3"
+  }
+}
