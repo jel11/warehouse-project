@@ -3,6 +3,7 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import { getDb } from './db/connection';
+import { authRoutes } from './routes/auth.routes';
 
 const server = Fastify({
   logger: {
@@ -24,14 +25,8 @@ server.register(jwt, {
   secret: process.env.JWT_SECRET || 'fallback_secret_change_in_production',
 });
 
-// Декоратор для проверки аутентификации
-server.decorate('authenticate', async function (request: any, reply: any) {
-  try {
-    await request.jwtVerify();
-  } catch {
-    reply.status(401).send({ error: 'Unauthorized' });
-  }
-});
+// Маршруты
+server.register(authRoutes, { prefix: '/api/auth' });
 
 // Healthcheck
 server.get('/health', async () => {
