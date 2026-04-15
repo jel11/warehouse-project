@@ -13,6 +13,31 @@ async function migrate() {
   db.exec(schema);
   console.log('✓ Схема базы данных применена');
 
+  // Миграция: counted_qty должно быть nullable (NULL = не подсчитано)
+  // SQLite не поддерживает ALTER COLUMN — пересоздаём таблицу если нужно
+  const colInfo = db.prepare("PRAGMA table_info(inventory_items)").all() as Array<{
+    name: string; notnull: number;
+  }>;
+  const countedCol = colInfo.find(c => c.name === 'counted_qty');
+  if (countedCol && countedCol.notnull === 1) {
+    db.exec(`
+      CREATE TABLE inventory_items_new (
+        id            INTEGER PRIMARY KEY AUTOINCREMENT,
+        inventory_id  INTEGER NOT NULL REFERENCES inventories(id),
+        item_id       INTEGER NOT NULL REFERENCES items(id),
+        counted_qty   REAL,
+        previous_qty  REAL NOT NULL DEFAULT 0,
+        created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      INSERT INTO inventory_items_new SELECT * FROM inventory_items;
+      DROP TABLE inventory_items;
+      ALTER TABLE inventory_items_new RENAME TO inventory_items;
+      CREATE INDEX IF NOT EXISTS idx_inventory_items_inventory
+        ON inventory_items(inventory_id);
+    `);
+    console.log('✓ inventory_items.counted_qty теперь nullable');
+  }
+
   // Сидинг складов
   const warehouses = [
     { name: 'Бар',            is_transit: 0 },

@@ -6,6 +6,7 @@ import { getDb } from './db/connection';
 import { authRoutes } from './routes/auth.routes';
 import { warehousesRoutes } from './routes/warehouses.routes';
 import { itemsRoutes } from './routes/items.routes';
+import { inventoriesRoutes } from './routes/inventories.routes';
 
 const server = Fastify({
   logger: {
@@ -30,7 +31,8 @@ server.register(jwt, {
 // Маршруты
 server.register(authRoutes,       { prefix: '/api/auth' });
 server.register(warehousesRoutes, { prefix: '/api/warehouses' });
-server.register(itemsRoutes,      { prefix: '/api/items' });
+server.register(itemsRoutes,        { prefix: '/api/items' });
+server.register(inventoriesRoutes,  { prefix: '/api/inventories' });
 
 // Healthcheck
 server.get('/health', async () => {
